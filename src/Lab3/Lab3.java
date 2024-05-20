@@ -9,11 +9,11 @@ public class Lab3 {
         int n = 21;
         BigInteger m = BigInteger.valueOf(17);
 
-        // Р—Р°РґР°РЅРёРµ 1: РђР»СЊС„Р°
+        // Задание 1: Альфа
         BigInteger alpha = BigInteger.valueOf(3).modPow(BigInteger.valueOf(2 * n + 1), m);
-        System.out.println("1. РђР»СЊС„Р°\nAlpha: " + alpha);
+        System.out.println("1. Альфа\nAlpha: " + alpha);
 
-        // Р—Р°РґР°РЅРёРµ 2: РљРѕСЌС„С„РёС†РёРµРЅС‚С‹ РјРЅРѕРіРѕС‡Р»РµРЅР° РІ РїРѕР»Рµ GF(17)
+        // Задание 2: Коэффициенты многочлена в поле GF(17)
         BigInteger[] alphaPowers = new BigInteger[5];
         for (int i = 1; i <= 4; i++) {
             alphaPowers[i] = alpha.modPow(BigInteger.valueOf(i), m);
@@ -23,10 +23,10 @@ public class Lab3 {
         for (int i = 1; i <= 4; i++) {
             g = g.multiply(BigInteger.valueOf(-1)).multiply(alphaPowers[i]).mod(m);
         }
-        System.out.println("\n2. РљРѕСЌС„С„РёС†РёРµРЅС‚С‹ РјРЅРѕРіРѕС‡Р»РµРЅР° РІ РїРѕР»Рµ GF(17)\ng(x) coefficients: " + g);
+        System.out.println("2. Коэффициенты многочлена в поле GF(17)\ng(x) coefficients: " + g);
 
-        // Р—Р°РґР°РЅРёРµ 3: РњРЅРѕРіРѕС‡Р»РµРЅС‹ i_0(x), i_1(x), i_2(x)
-        String fullName = "Р»Р°С€РєРёРЅРґРѕР»СЊРЅРёРєРѕРІРјР°С‚РІРµР№Р°Р»РµРєСЃР°РЅРґСЂ";
+        // Задание 3: Многочлены i_0(x), i_1(x), i_2(x)
+        String fullName = "лашкиндольниковматвейалександр";
         List<Integer> sequence = new ArrayList<>();
         for (char c : fullName.toCharArray()) {
             sequence.add((int) c);
@@ -35,49 +35,49 @@ public class Lab3 {
         List<Integer> i1 = sequence.subList(Math.min(12, sequence.size()), Math.min(24, sequence.size()));
         List<Integer> i2 = sequence.subList(Math.min(24, sequence.size()), Math.min(36, sequence.size()));
 
-        System.out.println("\n3. РњРЅРѕРіРѕС‡Р»РµРЅС‹ i_0(x), i_1(x), i_2(x)\ni0(x): " + i0);
+        System.out.println("3. Многочлены i_0(x), i_1(x), i_2(x)\ni0(x): " + i0);
         System.out.println("i1(x): " + i1);
         System.out.println("i2(x): " + i2);
 
-        // Р—Р°РґР°РЅРёРµ 4: РњРЅРѕРіРѕС‡Р»РµРЅС‹ c_0(x), c_1(x), c_2(x)
+        // Задание 4: Многочлены c_0(x), c_1(x), c_2(x)
         List<Integer> c0 = modPoly(i0, g, m);
         List<Integer> c1 = modPoly(i1, g, m);
         List<Integer> c2 = modPoly(i2, g, m);
 
-        System.out.println("\n4. РњРЅРѕРіРѕС‡Р»РµРЅС‹ c_0(x), c_1(x), c_2(x)\nc0(x): " + c0);
+        System.out.println("4. Многочлены c_0(x), c_1(x), c_2(x)\nc0(x): " + c0);
         System.out.println("c1(x): " + c1);
         System.out.println("c2(x): " + c2);
 
-        // Р—Р°РґР°РЅРёРµ 5: РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃР»РѕРІР° v(x)
+        // Задание 5: Построение слова v(x)
         List<Integer> v = new ArrayList<>(i0);
         v.addAll(i1);
         v.addAll(i2);
 
-        System.out.println("\n5. РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃР»РѕРІР° v(x)\nv(x): " + v);
+        System.out.println("4. Построение слова v(x)\nv(x): " + v);
 
-        // Р—Р°РґР°РЅРёРµ 6: РќР°С…РѕР¶РґРµРЅРёРµ t_j
+        // Задание 6: Нахождение t_j
         int tj = findTj(v, alpha, m);
-        System.out.println("\n6. РќР°С…РѕР¶РґРµРЅРёРµ t_j\ntj: " + tj);
+        System.out.println("6. Нахождение t_j\ntj: " + tj);
 
-        // Р—Р°РґР°РЅРёРµ 7: Р РµС€РµРЅРёРµ СЃРёСЃС‚РµРјС‹ Ax = b
+        // Задание 7: Решение системы Ax = b
         BigInteger[][] A = buildMatrix(v, tj, alpha, m);
         BigInteger[] b = buildVector(v, tj, alpha, m);
         BigInteger[] x = solveSystem(A, b, m);
-        System.out.println("\n7. Р РµС€РµРЅРёРµ СЃРёСЃС‚РµРјС‹ Ax = b\nSolution x: ");
+        System.out.println("7. Решение системы Ax = b\nSolution x: ");
         for (BigInteger xi : x) {
             System.out.println(xi);
         }
 
-        // Р—Р°РґР°РЅРёРµ 8: РќР°С…РѕР¶РґРµРЅРёРµ РєРѕСЂРЅРµР№ РјРЅРѕРіРѕС‡Р»РµРЅР°
+        // Задание 8: Нахождение корней многочлена
         BigInteger[] roots = findRoots(x, m);
-        System.out.println("\n8. РќР°С…РѕР¶РґРµРЅРёРµ РєРѕСЂРЅРµР№ РјРЅРѕРіРѕС‡Р»РµРЅР°\nRoots: ");
+        System.out.println("8. Нахождение корней многочлена\nRoots: ");
         for (BigInteger root : roots) {
             System.out.println(root);
         }
 
-        // Р—Р°РґР°РЅРёРµ 9: РЎСЂР°РІРЅРµРЅРёРµ v_j(x)/g(x) СЃ c_j(x)
+        // Задание 9: Сравнение v_j(x)/g(x) с c_j(x)
         List<Integer> vjOverG = modPoly(v, g, m);
-        System.out.println("\n9. РЎСЂР°РІРЅРµРЅРёРµ v_j(x)/g(x) СЃ c_j(x)\nv_j(x): " + vjOverG);
+        System.out.println("9. Сравнение v_j(x)/g(x) с c_j(x)\nv_j(x): " + vjOverG);
         System.out.println("c_j(x): " + c0 + ", " + c1 + ", " + c2);
     }
 
@@ -92,18 +92,18 @@ public class Lab3 {
     }
 
     public static int findTj(List<Integer> poly, BigInteger alpha, BigInteger m) {
-        int maxTj = 2; // РџРѕСЃРєРѕР»СЊРєСѓ t_j в‰¤ 2 РїРѕ СѓСЃР»РѕРІРёСЋ
+        int maxTj = 2; // Поскольку t_j ? 2 по условию
         for (int t = maxTj; t >= 0; t--) {
             boolean hasNonZeroDet = hasNonZeroDeterminant(poly, alpha, m, t);
             if (hasNonZeroDet) {
                 return t;
             }
         }
-        return 0; // Р•СЃР»Рё РЅРё РѕРґРёРЅ t_j РЅРµ РїРѕРґРѕС€РµР», РІРѕР·РІСЂР°С‰Р°РµРј 0
+        return 0; // Если ни один t_j не подошел, возвращаем 0
     }
 
     public static boolean hasNonZeroDeterminant(List<Integer> poly, BigInteger alpha, BigInteger m, int t) {
-        // РџРѕСЃС‚СЂРѕРµРЅРёРµ РјР°С‚СЂРёС†С‹ A_tj Рё РїСЂРѕРІРµСЂРєР° РµРµ РґРµС‚РµСЂРјРёРЅР°РЅС‚Р°
+        // Построение матрицы A_tj и проверка ее детерминанта
         BigInteger[][] A = new BigInteger[t][t];
         for (int i = 0; i < t; i++) {
             for (int j = 0; j < t; j++) {
@@ -161,7 +161,7 @@ public class Lab3 {
         int n = A.length;
         BigInteger[] x = new BigInteger[n];
 
-        // РџСЂРµРѕР±СЂР°Р·СѓРµРј РјР°С‚СЂРёС†Сѓ A Рё РІРµРєС‚РѕСЂ b Рє СЂР°СЃС€РёСЂРµРЅРЅРѕР№ С„РѕСЂРјРµ
+        // Преобразуем матрицу A и вектор b к расширенной форме
         BigInteger[][] augmentedMatrix = new BigInteger[n][n + 1];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -170,9 +170,9 @@ public class Lab3 {
             augmentedMatrix[i][n] = b[i];
         }
 
-        // РџСЂРёРјРµРЅСЏРµРј РјРµС‚РѕРґ Р“Р°СѓСЃСЃР° РґР»СЏ СЂРµС€РµРЅРёСЏ СЃРёСЃС‚РµРјС‹ СѓСЂР°РІРЅРµРЅРёР№
+        // Применяем метод Гаусса для решения системы уравнений
         for (int i = 0; i < n; i++) {
-            // РќР°С…РѕРґРёРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЌР»РµРјРµРЅС‚ РІ СЃС‚РѕР»Р±С†Рµ
+            // Находим максимальный элемент в столбце
             int maxRow = i;
             for (int k = i + 1; k < n; k++) {
                 if (augmentedMatrix[k][i].abs().compareTo(augmentedMatrix[maxRow][i].abs()) > 0) {
@@ -180,12 +180,12 @@ public class Lab3 {
                 }
             }
 
-            // РњРµРЅСЏРµРј СЃС‚СЂРѕРєРё РјРµСЃС‚Р°РјРё
+            // Меняем строки местами
             BigInteger[] temp = augmentedMatrix[i];
             augmentedMatrix[i] = augmentedMatrix[maxRow];
             augmentedMatrix[maxRow] = temp;
 
-            // РќРѕСЂРјР°Р»РёР·СѓРµРј С‚РµРєСѓС‰СѓСЋ СЃС‚СЂРѕРєСѓ
+            // Нормализуем текущую строку
             for (int k = i + 1; k < n; k++) {
                 BigInteger factor = augmentedMatrix[k][i].divide(augmentedMatrix[i][i]).mod(m);
                 for (int j = i; j <= n; j++) {
@@ -194,7 +194,7 @@ public class Lab3 {
             }
         }
 
-        // РћР±СЂР°С‚РЅС‹Р№ С…РѕРґ РјРµС‚РѕРґР° Р“Р°СѓСЃСЃР°
+        // Обратный ход метода Гаусса
         for (int i = n - 1; i >= 0; i--) {
             BigInteger sum = BigInteger.ZERO;
             for (int j = i + 1; j < n; j++) {

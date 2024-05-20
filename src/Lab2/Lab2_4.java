@@ -30,7 +30,7 @@ public class Lab2_4 {
         return num;
     }
 
-    // Функция для вычисления НОД
+    // Функция для вычисления НОД (Наибольшего общего делителя)
     public static int gcd(int a, int b) {
         while (b != 0) {
             int temp = b;
@@ -40,7 +40,7 @@ public class Lab2_4 {
         return a;
     }
 
-    // Функция для вычисления обратного по модулю
+    // Функция для вычисления обратного элемента по модулю
     public static BigInteger modInverse(BigInteger a, BigInteger m) {
         return a.modInverse(m);
     }
@@ -54,8 +54,8 @@ public class Lab2_4 {
         int n = 21;
 
         // Задание 1: Выбор простых чисел
-        int index1 = 20; // 21-е число
-        int index2 = (40 % 30) + 1 - 1; // (40 % 30) + 1 - 1 = 10
+        int index1 = n; // 21-е число в списке
+        int index2 = (40 % 30) + 1 - 1; // (40 % 30) + 1 - 1 = 10-е число в списке
         int p = primeNumbers[index1];
         int q = primeNumbers[index2];
 
@@ -65,11 +65,11 @@ public class Lab2_4 {
         // Задание 2: Вычисление N и ключей
         BigInteger P = BigInteger.valueOf(p);
         BigInteger Q = BigInteger.valueOf(q);
-        BigInteger N = P.multiply(Q);
-        BigInteger phi = (P.subtract(BigInteger.ONE)).multiply(Q.subtract(BigInteger.ONE));
+        BigInteger N = P.multiply(Q); // N = p * q
+        BigInteger phi = (P.subtract(BigInteger.ONE)).multiply(Q.subtract(BigInteger.ONE)); // φ(N) = (p - 1) * (q - 1)
 
         // Выбор открытого ключа K
-        BigInteger K = BigInteger.valueOf(65537); // 2^16 + 1
+        BigInteger K = BigInteger.valueOf(65537); // 2^16 + 1, распространенное значение для e
 
         // Проверка, что НОД(φ(N), K) = 1
         if (gcd(K.intValue(), phi.intValue()) != 1) {
@@ -108,7 +108,7 @@ public class Lab2_4 {
         // Зашифрование первых 5 блоков
         for (int i = 0; i < Math.min(5, blocks.size()); i++) {
             BigInteger message = new BigInteger(blocks.get(i));
-            BigInteger encryptedMessage = message.modPow(K, N);
+            BigInteger encryptedMessage = message.modPow(K, N); // Шифрование блока
             encryptedBlocks.add(encryptedMessage);
             System.out.println(i + ":");
             System.out.println("Original Block: " + message);
@@ -120,7 +120,7 @@ public class Lab2_4 {
         // Задание 4: Расшифрование блоков
         int i = 0;
         for (BigInteger encryptedBlock : encryptedBlocks) {
-            BigInteger decryptedMessage = encryptedBlock.modPow(D, N);
+            BigInteger decryptedMessage = encryptedBlock.modPow(D, N); // Расшифрование блока
             System.out.println(i++ + ":");
             System.out.println("Decrypted Block: " + decryptedMessage);
         }
@@ -130,16 +130,16 @@ public class Lab2_4 {
         // Задание 5: Вычисление хэш-функции
         BigInteger h = BigInteger.TEN; // h0 = 10
         for (BigInteger mi : encryptedBlocks) {
-            h = h.add(mi).pow(3).mod(N);
+            h = h.add(mi).pow(3).mod(N); // h(i) = (h(i-1) + m(i))^3 mod N
         }
         System.out.println("Hash Value: " + h);
 
         // Задание 6: Цифровая подпись
-        BigInteger signature = h.modPow(D, N);
+        BigInteger signature = h.modPow(D, N); // Подпись = h^D mod N
         System.out.println("Signature: " + signature);
 
         // Проверка цифровой подписи
-        BigInteger verifiedHash = signature.modPow(K, N);
+        BigInteger verifiedHash = signature.modPow(K, N); // Проверка подписи: signature^K mod N
         System.out.println("Verified Hash: " + verifiedHash);
 
         if (verifiedHash.equals(h)) {

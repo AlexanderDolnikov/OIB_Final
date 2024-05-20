@@ -5,22 +5,23 @@ import java.util.Map;
 
 public class Lab2_1_AffineCipher {
 
-    private static final int M = 68; // Обновляем модуль для нового алфавита
-    private static final int N = 21;//variant
-    private static final int A = N + 2;
-    private static final int B = (N - 25 + M) % M;
-    private static Map<Character, Integer> charToInt = new HashMap<>();
-    private static Map<Integer, Character> intToChar = new HashMap<>();
-    private static final int A_INV;
+    private static final int M = 68; // Размер алфавита для нового шифра (расширенный алфавит)
+    private static final int N = 21; // Номер варианта
+    private static final int A = N + 2; // Параметр A для аффинного шифра
+    private static final int B = (N - 25 + M) % M; // Параметр B для аффинного шифра, чтобы всегда был положительным
+    private static Map<Character, Integer> charToInt = new HashMap<>(); // Словарь для преобразования символов в числа
+    private static Map<Integer, Character> intToChar = new HashMap<>(); // Словарь для преобразования чисел в символы
+    private static final int A_INV; // Обратный элемент для A по модулю M
 
     static {
-        // Расширенный алфавит с заглавными и строчными буквами, пробелом и знаками препинания (Часть А)
+        // Инициализация словарей символов (Часть А)
         String chars = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя ,.";
         for (int i = 0; i < chars.length(); i++) {
             charToInt.put(chars.charAt(i), i);
             intToChar.put(i, chars.charAt(i));
         }
-        A_INV = findModInverse(A, M); // Вычисляем обратный элемент для A по модулю M
+        // Вычисление обратного элемента для A по модулю M
+        A_INV = findModInverse(A, M);
     }
 
     public static void main(String[] args) {
@@ -38,15 +39,15 @@ public class Lab2_1_AffineCipher {
                       "А можно использовать простую модулярную арифметику и не составлять " +
                       "таблицу.";
 
-        // Часть Б: Шифрование текста
+        // Шифрование текста
         String encryptedText = encrypt(text);
         System.out.println("Зашифрованный текст: " + encryptedText);
 
-        // Часть Г: Расшифровка текста
+        // Расшифровка текста
         String decryptedText = decrypt(encryptedText);
         System.out.println("Расшифрованный текст: " + decryptedText);
 
-        // Часть Д: Показ использования методов extendedGCD и findModInverse
+        // Демонстрация использования методов extendedGCD и findModInverse
         int[] gcdResult = extendedGCD(A, M);
         System.out.println("НОД " + A + " и " + M + ": " + gcdResult[2]);
         System.out.println("Коэффициенты: x = " + gcdResult[0] + ", y = " + gcdResult[1]);
@@ -58,14 +59,14 @@ public class Lab2_1_AffineCipher {
         StringBuilder encrypted = new StringBuilder();
         for (char ch : text.toCharArray()) {
             if (charToInt.containsKey(ch)) {
-                int x = charToInt.get(ch);
-                int y = (A * x + B) % M;
-                encrypted.append(intToChar.get(y));
+                int x = charToInt.get(ch); // Преобразование символа в число
+                int y = (A * x + B) % M; // Применение аффинного преобразования
+                encrypted.append(intToChar.get(y)); // Преобразование числа обратно в символ
             } else {
-                encrypted.append(ch); // Добавляем символы без изменений, если они не в карте
+                encrypted.append(ch); // Оставляем символы без изменений, если они не в словаре
             }
         }
-        return encrypted.toString();
+        return encrypted.toString(); // Возвращаем зашифрованный текст
     }
 
     // Функция расшифровки
@@ -73,39 +74,36 @@ public class Lab2_1_AffineCipher {
         StringBuilder decrypted = new StringBuilder();
         for (char ch : text.toCharArray()) {
             if (charToInt.containsKey(ch)) {
-                int y = charToInt.get(ch);
-                int x = (A_INV * (y - B + M)) % M;
-                decrypted.append(intToChar.get(x));
+                int y = charToInt.get(ch); // Преобразование символа в число
+                int x = (A_INV * (y - B + M)) % M; // Обратное аффинное преобразование
+                decrypted.append(intToChar.get(x)); // Преобразование числа обратно в символ
             } else {
-                decrypted.append(ch); // Добавляем символы без изменений, если они не в карте
+                decrypted.append(ch); // Оставляем символы без изменений, если они не в словаре
             }
         }
-        return decrypted.toString();
+        return decrypted.toString(); // Возвращаем расшифрованный текст
     }
 
     // Функция для нахождения обратного элемента с использованием расширенного алгоритма Евклида (Часть Б и Г)
     public static int findModInverse(int a, int m) {
         int[] result = extendedGCD(a, m);
-        if (result[2] != 1) {
+        if (result[2] != 1) { // Проверяем, что НОД равен 1
             throw new IllegalArgumentException("Обратный элемент не существует");
         } else {
-            return (result[0] % m + m) % m;
+            return (result[0] % m + m) % m; // Возвращаем обратный элемент
         }
     }
 
     // Расширенный алгоритм Евклида (Часть Б)
     public static int[] extendedGCD(int a, int b) {
         if (b == 0) {
-            return new int[]{1, 0, a};
+            return new int[]{1, 0, a}; // Возвращаем начальные коэффициенты и НОД
         } else {
-            int[] result = extendedGCD(b, a % b);
+            int[] result = extendedGCD(b, a % b); // Рекурсивный вызов
             int x = result[0];
             int y = result[1];
             int gcd = result[2];
-            return new int[]{y, x - (a / b) * y, gcd};
+            return new int[]{y, x - (a / b) * y, gcd}; // Обновляем коэффициенты
         }
     }
 }
-
-
-
